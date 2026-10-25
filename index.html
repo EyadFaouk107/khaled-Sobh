@@ -1,0 +1,1271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khaled Sobh | منصة الأستاذ خالد صبح للرياضيات</title>
+  <!-- Google Fonts: Cairo & IBM Plex Sans Arabic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/config.js"></script>
+  <script src="./js/supabase-client.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              dark: '#070f1e',
+              navy: '#0f172a',
+              card: '#1e293b',
+              accent: '#2563eb',
+              electric: '#3b82f6',
+              cyan: '#06b6d4',
+              violet: '#8b5cf6',
+              glow: '#60a5fa'
+            }
+          },
+          fontFamily: {
+            cairo: ['Cairo', 'sans-serif'],
+            ibm: ['IBM Plex Sans Arabic', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Cairo', 'IBM Plex Sans Arabic', sans-serif;
+      background-color: #070f1e;
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    /* Math Grid Pattern Background */
+    .math-grid-bg {
+      background-size: 40px 40px;
+      background-image: 
+        linear-gradient(to right, rgba(59, 130, 246, 0.05) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(59, 130, 246, 0.05) 1px, transparent 1px);
+    }
+
+    /* Glow Effects */
+    .glow-box {
+      box-shadow: 0 0 25px -5px rgba(59, 130, 246, 0.25);
+    }
+    .glow-box-lg {
+      box-shadow: 0 0 50px -10px rgba(59, 130, 246, 0.35);
+    }
+    .text-glow {
+      text-shadow: 0 0 12px rgba(96, 165, 250, 0.5);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3b82f6;
+    }
+
+    /* Floating Math Symbols Animation */
+    @keyframes floatSymbol {
+      0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.4; }
+      50% { transform: translateY(-15px) rotate(5deg); opacity: 0.8; }
+    }
+    .animate-float-slow {
+      animation: floatSymbol 6s ease-in-out infinite;
+    }
+    .animate-float-fast {
+      animation: floatSymbol 4s ease-in-out infinite 1s;
+    }
+
+    /* Glassmorphism */
+    .glass-nav {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card {
+      background: rgba(30, 41, 59, 0.7);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-card:hover {
+      border-color: rgba(59, 130, 246, 0.4);
+    }
+
+    /* Modal Animation */
+    .modal-enter {
+      animation: modalFadeIn 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+
+<body class="math-grid-bg min-h-screen flex flex-col antialiased selection:bg-brand-electric selection:text-white">
+
+  <!-- ==========================================
+       HEADER & NAVIGATION BAR
+       ========================================== -->
+  <header class="sticky top-0 z-50 glass-nav transition-all duration-300" id="mainHeader">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#hero" class="flex items-center gap-3 group focus:outline-none">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-brand-accent to-brand-cyan flex items-center justify-center font-bold text-xl text-white shadow-lg shadow-brand-accent/30 group-hover:scale-105 transition-transform duration-300">
+          <span class="font-mono">∫x</span>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-xl font-black tracking-tight text-white group-hover:text-brand-electric transition-colors">Khaled Sobh</span>
+          <span class="text-xs text-slate-400 font-medium">خالد صبح — منصة الرياضيات</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center gap-1 lg:gap-2">
+        <a href="#hero" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all">الرئيسية</a>
+        <a href="#benefits" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all">مميزات المنصة</a>
+        <a href="#content" onclick="switchMainTab('videos')" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all">الفيديوهات</a>
+        <a href="#content" onclick="switchMainTab('sheets')" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all">المذكرات</a>
+        <a href="#content" onclick="switchMainTab('revisions')" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all">المراجعات</a>
+        <a href="#contact" class="px-4 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-800/60 transition-all">تواصل معنا</a>
+      </nav>
+
+      <!-- Action Buttons -->
+      <div class="hidden md:flex items-center gap-3">
+        <a href="#content" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-brand-accent to-brand-electric hover:from-blue-600 hover:to-blue-500 text-white font-bold text-sm shadow-lg shadow-brand-accent/25 hover:shadow-brand-accent/40 hover:-translate-y-0.5 transition-all">
+          ابدأ المذاكرة <i class="fa-solid fa-arrow-left mr-2 text-xs"></i>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button id="mobileMenuBtn" class="md:hidden p-2.5 rounded-xl bg-slate-800 text-slate-300 hover:text-white focus:outline-none border border-slate-700" aria-label="Toggle Navigation">
+        <i class="fa-solid fa-bars text-lg" id="menuIcon"></i>
+      </button>
+    </div>
+
+    <!-- Mobile Drawer Menu -->
+    <div id="mobileDrawer" class="hidden md:hidden border-b border-slate-800 bg-brand-navy/95 backdrop-blur-xl px-4 pt-2 pb-6 space-y-3">
+      <a href="#hero" class="mobile-nav-link block px-4 py-3 rounded-lg text-base font-semibold text-slate-200 hover:bg-slate-800">الرئيسية</a>
+      <a href="#benefits" class="mobile-nav-link block px-4 py-3 rounded-lg text-base font-semibold text-slate-200 hover:bg-slate-800">مميزات المنصة</a>
+      <a href="#content" onclick="switchMainTab('videos')" class="mobile-nav-link block px-4 py-3 rounded-lg text-base font-semibold text-slate-200 hover:bg-slate-800">الفيديوهات التعليمية</a>
+      <a href="#content" onclick="switchMainTab('sheets')" class="mobile-nav-link block px-4 py-3 rounded-lg text-base font-semibold text-slate-200 hover:bg-slate-800">المذكرات والشيتات</a>
+      <a href="#content" onclick="switchMainTab('revisions')" class="mobile-nav-link block px-4 py-3 rounded-lg text-base font-semibold text-slate-200 hover:bg-slate-800">المراجعات النهائية</a>
+      <a href="#contact" class="mobile-nav-link block px-4 py-3 rounded-lg text-base font-semibold text-slate-200 hover:bg-slate-800">تواصل معنا</a>
+      
+      <div class="pt-3 border-t border-slate-800 flex items-center justify-between gap-3">
+        <a href="#content" class="flex-2 w-full py-3 px-4 rounded-xl bg-brand-accent text-white font-bold text-center text-sm shadow-md">
+          ابدأ المذاكرة الآن
+        </a>
+      </div>
+    </div>
+  </header>
+
+
+  <main class="flex-grow">
+    
+    <!-- ==========================================
+         HERO SECTION
+         ========================================== -->
+    <section id="hero" class="relative pt-12 pb-20 md:pt-20 md:pb-32 overflow-hidden">
+      <!-- Glow background light -->
+      <div class="absolute top-1/4 right-1/4 w-96 h-96 bg-brand-accent/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute bottom-10 left-10 w-80 h-80 bg-brand-violet/15 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+          
+          <!-- Text Content -->
+          <div class="lg:col-span-7 text-center lg:text-right space-y-6">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-800/80 border border-brand-electric/30 text-brand-electric text-xs sm:text-sm font-semibold shadow-inner">
+              <span class="w-2 h-2 rounded-full bg-brand-cyan animate-pulse"></span>
+              قناة Mister Khaled Sobh الرسمية
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl lg:text-6xl font-black text-white leading-tight tracking-tight">
+              الرياضيات أسهل <br class="hidden sm:inline">
+              <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-electric via-brand-cyan to-brand-violet text-glow">لما تفهمها صح.</span>
+            </h1>
+
+            <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 font-normal leading-relaxed">
+              مع <strong class="text-white font-bold">Khaled Sobh</strong>، افهم الرياضيات خطوة بخطوة، ووصل لدروسك ومذكراتك ومراجعاتك بسهولة من مكان واحد للمرحلتين الإعدادية والثانوية.
+            </p>
+
+            <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <a href="#content" class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-brand-accent to-brand-electric text-white font-black text-base shadow-lg shadow-brand-accent/30 hover:shadow-brand-accent/50 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3">
+                <i class="fa-solid fa-graduation-cap text-lg"></i>
+                ابدأ المذاكرة الان
+              </a>
+              <a href="#content" onclick="switchMainTab('videos')" class="w-full sm:w-auto px-7 py-4 rounded-xl bg-slate-800/90 hover:bg-slate-700/90 border border-slate-700 text-slate-200 font-bold text-base hover:text-white hover:border-slate-600 transition-all flex items-center justify-center gap-3">
+                <i class="fa-brands fa-youtube text-red-500 text-lg"></i>
+                تصفح الفيديوهات
+              </a>
+            </div>
+
+            <!-- Quick Stats/Badges -->
+            <div class="pt-8 border-t border-slate-800/80 grid grid-cols-3 gap-4 text-center lg:text-right">
+              <div>
+                <span class="block text-2xl font-black text-white">إعدادي وثانوي</span>
+                <span class="text-xs text-slate-400">تغطية شاملة للمناهج</span>
+              </div>
+              <div>
+                <span class="block text-2xl font-black text-brand-cyan">فيديوهات مجانية</span>
+                <span class="text-xs text-slate-400">مباشرة من يوتيوب</span>
+              </div>
+              <div>
+                <span class="block text-2xl font-black text-brand-electric">مذكرات PDF</span>
+                <span class="text-xs text-slate-400">ملخصات ومراجعات</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Mathematical Canvas Composition -->
+          <div class="lg:col-span-5 relative flex justify-center items-center">
+            <div class="w-full max-w-md aspect-square relative rounded-3xl glass-card p-6 glow-box flex flex-col justify-between overflow-hidden">
+              
+              <!-- Floating Math Equations Header -->
+              <div class="flex justify-between items-center text-xs text-brand-cyan font-mono border-b border-slate-700/50 pb-3">
+                <span>f(x) = ax² + bx + c</span>
+                <span class="bg-brand-accent/20 px-2 py-0.5 rounded text-brand-electric font-bold">Δ = b² - 4ac</span>
+              </div>
+
+              <!-- Main SVG Vector Graph -->
+              <div class="relative w-full h-64 my-auto flex items-center justify-center">
+                <svg viewBox="0 0 300 240" class="w-full h-full text-brand-electric">
+                  <!-- Grid -->
+                  <defs>
+                    <pattern id="gridPattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="300" height="240" fill="url(#gridPattern)" />
+
+                  <!-- Axis -->
+                  <line x1="20" y1="120" x2="280" y2="120" stroke="#475569" stroke-width="2" stroke-dasharray="4"/>
+                  <line x1="150" y1="20" x2="150" y2="220" stroke="#475569" stroke-width="2" stroke-dasharray="4"/>
+                  
+                  <!-- Sine Curve -->
+                  <path d="M 20,120 Q 85,20 150,120 T 280,120" fill="none" stroke="#3b82f6" stroke-width="3.5" class="drop-shadow-lg" />
+                  
+                  <!-- Parabola Curve -->
+                  <path d="M 50,210 Q 150,20 250,210" fill="none" stroke="#06b6d4" stroke-width="2.5" stroke-dasharray="6,4" />
+
+                  <!-- Geometric Triangle & Vector -->
+                  <polygon points="150,120 220,60 220,120" fill="rgba(139, 92, 246, 0.2)" stroke="#8b5cf6" stroke-width="2" />
+                  <circle cx="220" cy="60" r="4" fill="#60a5fa" />
+                  <circle cx="150" cy="120" r="4" fill="#3b82f6" />
+                  
+                  <!-- Angle Arc -->
+                  <path d="M 170,120 A 20,20 0 0,0 165,108" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                  <text x="175" y="112" fill="#f59e0b" font-size="12" font-weight="bold">θ</text>
+                </svg>
+
+                <!-- Floating Math Badges -->
+                <div class="absolute top-2 left-2 px-3 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-xs font-mono text-brand-cyan animate-float-slow">
+                  lim (x→∞)
+                </div>
+                <div class="absolute bottom-4 right-4 px-3 py-1 rounded-lg bg-slate-900/90 border border-slate-700 text-xs font-mono text-brand-violet animate-float-fast">
+                  ∫ sin(x) dx = -cos(x)
+                </div>
+                <div class="absolute top-1/2 -right-3 px-2.5 py-1 rounded-full bg-brand-accent text-white font-bold text-xs shadow-md">
+                  ∑ xᵢ
+                </div>
+              </div>
+
+              <!-- Footer Symbol Strip -->
+              <div class="flex justify-between items-center text-slate-400 font-mono text-sm pt-3 border-t border-slate-700/50">
+                <span>π ≈ 3.14159</span>
+                <span>e = 2.718</span>
+                <span>√2</span>
+                <span class="text-brand-cyan font-bold">Pythagoras</span>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         LEARNING BENEFITS SECTION
+         ========================================== -->
+    <section id="benefits" class="py-12 bg-slate-900/60 border-y border-slate-800/80">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center max-w-xl mx-auto mb-10">
+          <h2 class="text-2xl sm:text-3xl font-black text-white">لماذا تختار منصة Khaled Sobh؟</h2>
+          <p class="text-sm text-slate-400 mt-2">بيئة تعلم مبسطة ومنظمة للوصول لأفضل الدرجات</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          
+          <!-- Benefit Card 1 -->
+          <div class="glass-card p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-brand-accent/20 border border-brand-accent/40 text-brand-electric flex items-center justify-center text-xl mb-4">
+              <i class="fa-solid fa-layer-group"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">شرح منظم</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              المحتوى مقسم بدقة حسب المرحلة الدراسية والصفوف المختلفة لتسهيل المذاكرة والتصفح.
+            </p>
+          </div>
+
+          <!-- Benefit Card 2 -->
+          <div class="glass-card p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-red-500/20 border border-red-500/40 text-red-400 flex items-center justify-center text-xl mb-4">
+              <i class="fa-brands fa-youtube"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">فيديوهات تعليمية</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              الوصول المباشر إلى فيديوهات الدروس والشروحات من قناة المدرس بوضوح وجودة عالية.
+            </p>
+          </div>
+
+          <!-- Benefit Card 3 -->
+          <div class="glass-card p-6 rounded-2xl transition-all duration-300 hover:-translate-y-1">
+            <div class="w-12 h-12 rounded-xl bg-brand-cyan/20 border border-brand-cyan/40 text-brand-cyan flex items-center justify-center text-xl mb-4">
+              <i class="fa-solid fa-file-pdf"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-2">مذكرات ومراجعات</h3>
+            <p class="text-slate-300 text-sm leading-relaxed">
+              مكان منظم للوصول إلى ملفات المذاكرة المتاحة، الشيتات، والمراجعات النهائية جاهزة للتحميل.
+            </p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- ==========================================
+         MAIN EDUCATIONAL CONTENT SECTION
+         ========================================== -->
+    <section id="content" class="py-16 md:py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto mb-10">
+        <h2 class="text-3xl sm:text-4xl font-black text-white">اختار مرحلتك وابدأ المذاكرة</h2>
+        <p class="text-slate-400 text-base mt-3">كل المحتوى اللي محتاجه لمرحلتك الدراسية في مكان واحد منظم ورسمي.</p>
+      </div>
+
+      <!-- Navigation Tabs (Videos / Sheets / Revisions) -->
+      <div class="flex justify-center mb-8">
+        <div class="inline-flex p-1.5 rounded-2xl bg-slate-900 border border-slate-800 max-w-full overflow-x-auto">
+          <button id="tabBtn-videos" onclick="switchMainTab('videos')" class="px-6 py-3 rounded-xl font-bold text-sm sm:text-base transition-all duration-200 flex items-center gap-2 bg-brand-accent text-white shadow-md">
+            <i class="fa-brands fa-youtube text-red-400"></i> الفيديوهات
+          </button>
+          <button id="tabBtn-sheets" onclick="switchMainTab('sheets')" class="px-6 py-3 rounded-xl font-bold text-sm sm:text-base text-slate-400 hover:text-white transition-all duration-200 flex items-center gap-2">
+            <i class="fa-solid fa-book-open text-brand-cyan"></i> المذكرات والشيتات
+          </button>
+          <button id="tabBtn-revisions" onclick="switchMainTab('revisions')" class="px-6 py-3 rounded-xl font-bold text-sm sm:text-base text-slate-400 hover:text-white transition-all duration-200 flex items-center gap-2">
+            <i class="fa-solid fa-star text-amber-400"></i> المراجعات النهائية
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Controls Row (Search + Live Status) -->
+      <div class="glass-card p-4 rounded-2xl mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+        <!-- Live Search Input -->
+        <div class="relative w-full md:w-96">
+          <i class="fa-solid fa-magnifying-glass absolute right-4 top-1/2 -translate-y-1/2 text-slate-400"></i>
+          <input type="text" id="searchInput" oninput="handleSearch()" placeholder="بحث في الدروس والعناوين (عربي / English)..." class="w-full pr-11 pl-10 py-2.5 rounded-xl bg-slate-900/90 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-electric transition-all" />
+          <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Sync / Refresh Status -->
+        <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end text-xs text-slate-400">
+          <span id="contentCounter" class="bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700 text-slate-300 font-semibold">
+            جاري تحميل البيانات...
+          </span>
+          <button onclick="refreshYouTubeData()" title="تحديث البيانات من يوتيوب" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700 transition-all flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate" id="refreshIcon"></i>
+            <span class="hidden sm:inline">تحديث البيانات</span>
+          </button>
+        </div>
+      </div>
+
+
+      <!-- ACADEMIC STAGES ACCORDION CONTAINER -->
+      <div id="stagesAccordionContainer" class="space-y-4">
+        <!-- Accordion Items will be dynamically populated or structured -->
+      </div>
+
+      <!-- Load More Button for YouTube Videos -->
+      <div id="loadMoreContainer" class="hidden text-center mt-10">
+        <button id="loadMoreBtn" onclick="fetchMoreYouTubeVideos()" class="px-8 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-bold text-sm shadow-md transition-all inline-flex items-center gap-2">
+          <span>تحميل المزيد من الفيديوهات</span>
+          <i class="fa-solid fa-chevron-down text-xs"></i>
+        </button>
+      </div>
+
+    </section>
+
+
+    <!-- ==========================================
+         CONTACT SECTION
+         ========================================== -->
+    <section id="contact" class="py-16 bg-slate-900/80 border-t border-slate-800">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <div class="text-center mb-10">
+          <h2 class="text-3xl font-black text-white">تواصل مع Khaled Sobh</h2>
+          <p class="text-slate-400 text-sm mt-2">عندك استفسار؟ حابب تشترك أو تسأل عن المواعيد والمجموعات؟ تواصل معنا بسهولة.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          
+          <!-- Direct Social & WhatsApp Info -->
+          <div class="md:col-span-5 space-y-4">
+            <div class="glass-card p-6 rounded-2xl space-y-4">
+              <h3 class="text-lg font-bold text-white border-b border-slate-700/60 pb-3">قنوات التواصل المباشرة</h3>
+              
+              <a href="https://youtube.com/@mr.khaledsobh" target="_blank" rel="noopener" class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 hover:bg-red-500/10 border border-slate-700/50 hover:border-red-500/40 text-slate-200 hover:text-white transition-all group">
+                <div class="w-10 h-10 rounded-lg bg-red-500/20 text-red-500 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                  <i class="fa-brands fa-youtube"></i>
+                </div>
+                <div>
+                  <span class="block text-sm font-bold">قناة اليوتيوب</span>
+                  <span class="text-xs text-slate-400">@mr.khaledsobh</span>
+                </div>
+              </a>
+
+              <a href="https://wa.me/201223950587" id="whatsappLink" target="_blank" rel="noopener noreferrer" aria-label="التواصل مع خالد صبح عبر واتساب" class="flex items-center gap-3 p-3 rounded-xl bg-slate-800/60 hover:bg-emerald-500/10 border border-slate-700/50 hover:border-emerald-500/40 text-slate-200 hover:text-white transition-all group">
+                <div class="w-10 h-10 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-lg group-hover:scale-110 transition-transform">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <div>
+                  <span class="block text-sm font-bold">واتساب مباشر</span>
+                  <span class="text-xs text-slate-400">انقر للتحدث مباشرة مع الأستاذ</span>
+                </div>
+              </a>
+
+              <div class="p-4 rounded-xl bg-brand-accent/10 border border-brand-accent/20 text-xs text-slate-300 leading-relaxed">
+                <i class="fa-solid fa-circle-info text-brand-electric ml-1"></i>
+                يمكنك إرسال الأسئلة والاستفسارات الخاصة بالدروس والصفوف الدراسية وسيتم الرد عليك في أقرب وقت.
+              </div>
+            </div>
+          </div>
+
+          <!-- Contact Form -->
+          <div class="md:col-span-7">
+            <form id="contactForm" onsubmit="handleFormSubmit(event)" class="glass-card p-6 sm:p-8 rounded-2xl space-y-4">
+              <div id="formAlert" class="hidden p-4 rounded-xl text-sm font-semibold mb-4"></div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1.5" for="senderName">الاسم بالكامل *</label>
+                <input type="text" id="senderName" required placeholder="أدخل اسمك الثلاثي" class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-electric transition-all" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1.5" for="senderContact">البريد الإلكتروني أو رقم الهاتف *</label>
+                <input type="text" id="senderContact" required placeholder="010xxxxxxxx أو email@example.com" class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-electric transition-all" />
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1.5" for="senderStage">المرحلة الدراسية</label>
+                <select id="senderStage" class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white text-sm focus:outline-none focus:border-brand-electric transition-all">
+                  <option value="غير محدد">اختر المرحلة الدراسية</option>
+                  <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                  <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                  <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                  <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                  <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                  <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="block text-xs font-bold text-slate-300 mb-1.5" for="senderMessage">الرسالة *</label>
+                <textarea id="senderMessage" rows="4" required placeholder="اكتب استفسارك هنا..." class="w-full px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white placeholder-slate-500 text-sm focus:outline-none focus:border-brand-electric transition-all"></textarea>
+              </div>
+
+              <button type="submit" id="submitFormBtn" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-brand-accent to-brand-electric hover:from-blue-600 hover:to-blue-500 text-white font-bold text-sm shadow-lg shadow-brand-accent/20 transition-all flex items-center justify-center gap-2">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span>إرسال الرسالة</span>
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+
+  <!-- ==========================================
+       FOOTER
+       ========================================== -->
+  <footer class="bg-brand-navy border-t border-slate-800 text-slate-400 text-sm py-10">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <!-- Brand Info -->
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-brand-accent flex items-center justify-center font-bold text-white font-mono">
+            K
+          </div>
+          <div>
+            <span class="block font-bold text-white text-base">Khaled Sobh (خالد صبح)</span>
+            <span class="text-xs text-slate-400">منصة تدريس الرياضيات للمرحلتين الإعدادية والثانوية</span>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="flex flex-wrap justify-center gap-6 text-xs font-semibold">
+          <a href="#hero" class="hover:text-white transition-colors">الرئيسية</a>
+          <a href="#content" onclick="switchMainTab('videos')" class="hover:text-white transition-colors">الفيديوهات</a>
+          <a href="#content" onclick="switchMainTab('sheets')" class="hover:text-white transition-colors">المذكرات</a>
+          <a href="#content" onclick="switchMainTab('revisions')" class="hover:text-white transition-colors">المراجعات</a>
+          <a href="#contact" class="hover:text-white transition-colors">تواصل معنا</a>
+        </div>
+
+        <!-- Math Decorative Formula & Copyright -->
+        <div class="text-center md:text-left text-xs space-y-1">
+          <div class="font-mono text-brand-cyan text-xs">e<sup>iπ</sup> + 1 = 0</div>
+          <div>جميع الحقوق محفوظة &copy; <span id="currentYear"></span> Khaled Sobh</div>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- ==========================================
+       MODAL: YOUTUBE VIDEO EMBED PLAYER
+       ========================================== -->
+  <div id="videoPlayerModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+    <div class="bg-slate-900 border border-slate-800 w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl modal-enter relative">
+      <div class="flex items-center justify-between p-4 border-b border-slate-800 bg-slate-900">
+        <h4 id="videoModalTitle" class="text-sm font-bold text-white truncate max-w-xl">مشاهدة الفيديو</h4>
+        <button onclick="closeVideoModal()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+      <div class="relative aspect-video w-full bg-black">
+        <iframe id="youtubeIframe" class="w-full h-full" src="" title="YouTube Video Player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+      </div>
+      <div class="p-4 bg-slate-900 flex justify-between items-center text-xs text-slate-400">
+        <span id="videoModalDate"></span>
+        <a id="videoModalExternalLink" href="#" target="_blank" rel="noopener" class="text-brand-electric hover:underline flex items-center gap-1 font-semibold">
+          فتح على يوتيوب <i class="fa-solid fa-up-right-from-square"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ==========================================
+       JAVASCRIPT ARCHITECTURE & LOGIC
+       ========================================== -->
+  <script>
+    /* ==========================================================================
+       1. DATA STRUCTURES & CONFIGURATION
+       ========================================================================== */
+    
+    // Teacher Official YouTube Channel Details
+    const YOUTUBE_CONFIG = {
+      channelHandle: '@mr.khaledsobh',
+      channelUrl: 'https://youtube.com/@mr.khaledsobh',
+      localStorageKey: 'kaledsobh_yt_api_key',
+      cachedDataKey: 'kaledsobh_videos_cache',
+      defaultApiKey: (window.SITE_CONFIG && window.SITE_CONFIG.youtubeApiKey) || ''
+    };
+
+    // Academic Stages Config
+    const ACADEMIC_STAGES = [
+      { id: 'prep1', name: 'الصف الأول الإعدادي', badge: '1 إعدادي', desc: 'جبر وإحصاء، هندسة وقياس' },
+      { id: 'prep2', name: 'الصف الثاني الإعدادي', badge: '2 إعدادي', desc: 'جبر وحساب مثلثات، هندسة وتحليل' },
+      { id: 'prep3', name: 'الصف الثالث الإعدادي', badge: '3 إعدادي', desc: 'الجبر والعلاقات، الهندسة التحليلية وحساب المثلثات' },
+      { id: 'sec1',  name: 'الصف الأول الثانوي', badge: '1 ثانوي', desc: 'الجبر وحساب المثلثات، الهندسة المستوية' },
+      { id: 'sec2',  name: 'الصف الثاني الثانوي', badge: '2 ثانوي', desc: 'تفاضل وتكامل، جبر، ميكانيكا (علمي / أدبي)' },
+      { id: 'sec3',  name: 'الصف الثالث الثانوي', badge: '3 ثانوي', desc: 'الرياضيات المحتة والتطبيقية (استاتيكا، ديناميكا، تفاضل، جبر وهندسة فراغية)' },
+      { id: 'unclassified', name: 'غير مصنف / فيديوهات عامة', badge: 'محتوى عام', desc: 'شروحات عامة، نصائح ذاكرة، ومراجعات شاملة' }
+    ];
+
+    // Classification rules: match the normalized title AND full description.
+    // Explicit grade phrases take priority over subject/topic clues.
+    const CLASSIFICATION_RULES = [
+      { stageId: 'prep1', patterns: [
+        /(?:الصف\s*)?(?:الاول|اول)\s*(?:الاعدادي|اعدادي)/,
+        /(?:اولي|اولى)\s*(?:اعدادي|اعداديه)/,
+        /(?:للصف|لصف)\s*(?:الاول|اول)\s*(?:الاعدادي|اعدادي)/,
+        /(?:1st|first)\s*prep(?:aratory)?/, /prep\s*1/, /grade\s*7/, /\b1\s*ع\b/, /\bاولى?\s*اعدادي\b/
+      ]},
+      { stageId: 'prep2', patterns: [
+        /(?:الصف\s*)?(?:الثاني|ثاني|التاني|تاني)\s*(?:الاعدادي|اعدادي)/,
+        /(?:ثانيه|تانيه|تانية|ثانية)\s*(?:اعدادي|اعداديه)/,
+        /(?:للصف|لصف)\s*(?:الثاني|ثاني|التاني|تاني)\s*(?:الاعدادي|اعدادي)/,
+        /(?:2nd|second)\s*prep(?:aratory)?/, /prep\s*2/, /grade\s*8/, /\b2\s*ع\b/
+      ]},
+      { stageId: 'prep3', patterns: [
+        /(?:الصف\s*)?(?:الثالث|ثالث|التالت|تالت)\s*(?:الاعدادي|اعدادي)/,
+        /(?:ثالثه|تالته|تالتة|ثالثة)\s*(?:اعدادي|اعداديه)/,
+        /(?:للصف|لصف)\s*(?:الثالث|ثالث|التالت|تالت)\s*(?:الاعدادي|اعدادي)/,
+        /(?:3rd|third)\s*prep(?:aratory)?/, /prep\s*3/, /grade\s*9/, /\b3\s*ع\b/
+      ]},
+      { stageId: 'sec1', patterns: [
+        /(?:الصف\s*)?(?:الاول|اول)\s*(?:الثانوي|ثانوي)/,
+        /(?:اولي|اولى)\s*(?:ثانوي|ثانويه)/,
+        /(?:للصف|لصف)\s*(?:الاول|اول)\s*(?:الثانوي|ثانوي)/,
+        /(?:1st|first)\s*secondary/, /sec(?:ondary)?\s*1/, /grade\s*10/, /\b1\s*ث\b/
+      ]},
+      { stageId: 'sec2', patterns: [
+        /(?:الصف\s*)?(?:الثاني|ثاني|التاني|تاني)\s*(?:الثانوي|ثانوي)/,
+        /(?:ثانيه|تانيه|تانية|ثانية)\s*(?:ثانوي|ثانويه)/,
+        /(?:للصف|لصف)\s*(?:الثاني|ثاني|التاني|تاني)\s*(?:الثانوي|ثانوي)/,
+        /(?:2nd|second)\s*secondary/, /sec(?:ondary)?\s*2/, /grade\s*11/, /\b2\s*ث\b/
+      ]},
+      { stageId: 'sec3', patterns: [
+        /(?:الصف\s*)?(?:الثالث|ثالث|التالت|تالت)\s*(?:الثانوي|ثانوي)/,
+        /(?:ثالثه|تالته|تالتة|ثالثة)\s*(?:ثانوي|ثانويه)/,
+        /(?:للصف|لصف)\s*(?:الثالث|ثالث|التالت|تالت)\s*(?:الثانوي|ثانوي)/,
+        /(?:3rd|third)\s*secondary/, /sec(?:ondary)?\s*3/, /grade\s*12/, /ثانويه\s*عامه/, /الثانويه\s*العامه/, /\b3\s*ث\b/
+      ]}
+    ];
+
+    function normalizeArabicText(value = '') {
+      return String(value)
+        .toLowerCase()
+        .normalize('NFD')
+        .replace(/[\u064B-\u065F\u0670\u0640]/g, '')
+        .replace(/[أإآٱ]/g, 'ا')
+        .replace(/ى/g, 'ي')
+        .replace(/ة/g, 'ه')
+        .replace(/[٠-٩]/g, digit => String('٠١٢٣٤٥٦٧٨٩'.indexOf(digit)))
+        .replace(/[۰-۹]/g, digit => String('۰۱۲۳۴۵۶۷۸۹'.indexOf(digit)))
+        .replace(/[\u200e\u200f]/g, ' ')
+        .replace(/[^\p{L}\p{N}]+/gu, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+    }
+
+    // Fallback Sample Videos (Real titles & structure reflecting Khaled Sobh curriculum)
+    const SAMPLE_VIDEOS = [
+      {
+        id: 'v_prep1_1',
+        videoId: '',
+        title: 'شرح درس المجموعة الشمسية والأعداد النسبية - الصف الأول الإعدادي ترم أول',
+        description: 'شرح مبسط لمفهوم الأعداد النسبية والعمليات عليها مع حل تمارين كتاب المعاصر.',
+        thumbnail: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80',
+        publishedAt: '2025-10-10',
+        stageId: 'prep1'
+      },
+      {
+        id: 'v_prep2_1',
+        videoId: '',
+        title: 'التحليل بالتقسيم وإكمال المربع - الصف الثاني الإعدادي جبر',
+        description: 'أسهل طريقة لفهم التحليل وإكمال المربع بدون تلخبط مع الأستاذ خالد صبح.',
+        thumbnail: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&auto=format&fit=crop&q=80',
+        publishedAt: '2025-10-12',
+        stageId: 'prep2'
+      },
+      {
+        id: 'v_prep3_1',
+        videoId: '',
+        title: 'حساب المثلثات - النسب المثلثية الأساسية للزاوية الحادة - الصف الثالث الإعدادي',
+        description: 'شرح جا، جتا، ظا بطريقة مبسطة جداً مع المسائل المتوقعة في الامتحان.',
+        thumbnail: 'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=600&auto=format&fit=crop&q=80',
+        publishedAt: '2025-10-15',
+        stageId: 'prep3'
+      },
+      {
+        id: 'v_sec1_1',
+        videoId: '',
+        title: 'الهندسة المستوية - التشابه في المثلثات - الصف الأول الثانوي ترم أول',
+        description: 'شرح حالات تشابه المثلثات وتطبيقات التناسب في الدائرة.',
+        thumbnail: 'https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=600&auto=format&fit=crop&q=80',
+        publishedAt: '2025-10-18',
+        stageId: 'sec1'
+      },
+      {
+        id: 'v_sec2_1',
+        videoId: '',
+        title: 'التفاضل والتكامل - معدل التغير والاشتقاق - الصف الثاني الثانوي علمي وأدبي',
+        description: 'مفهوم الاشتقاق ومعدل التغير وتطبيقات عليه مع أسئلة النظام الجديد.',
+        thumbnail: 'https://images.unsplash.com/photo-1509228468518-180dd4864904?w=600&auto=format&fit=crop&q=80',
+        publishedAt: '2025-10-20',
+        stageId: 'sec2'
+      },
+      {
+        id: 'v_sec3_1',
+        videoId: '',
+        title: 'الاستاتيكا - الاحتكاك على مستوى مائل خشن - الصف الثالث الثانوي ثانوية عامة',
+        description: 'مراجعة قوية على قوانين الاحتكاك والاتزان العام مع أستاذ خالد صبح.',
+        thumbnail: 'https://images.unsplash.com/photo-1596495578065-6e0763fa1178?w=600&auto=format&fit=crop&q=80',
+        publishedAt: '2025-10-22',
+        stageId: 'sec3'
+      }
+    ];
+
+    // Configurable Sheets/PDF Data Bank
+    let SAMPLE_SHEETS = [
+      { id: 's1', stageId: 'prep1', title: 'مذكرة الجبر والإحصاء - الترم الأول', unit: 'الوحدة الأولى: الأعداد النسبية', size: '2.4 MB', pages: '18 صفحة', fileUrl: '' },
+      { id: 's2', stageId: 'prep2', title: 'شيت تمارين الهندسة والتحليل', unit: 'الوحدة الثانية: النظريات', size: '1.8 MB', pages: '12 صفحة', fileUrl: '' },
+      { id: 's3', stageId: 'prep3', title: 'ملخص قوانين حساب المثلثات والهندسة التحليلية', unit: 'شامل الفصل الأول', size: '3.1 MB', pages: '24 صفحة', fileUrl: '' },
+      { id: 's4', stageId: 'sec1',  title: 'مذكرة الجبر وحساب المثلثات - أولى ثانوي', unit: 'المصفوفات والمحددات', size: '4.0 MB', pages: '30 صفحة', fileUrl: '' },
+      { id: 's5', stageId: 'sec2',  title: 'شيت التفاضل والتكامل التطبيقي', unit: 'القواعد الأساسية للاستقاق', size: '2.2 MB', pages: '15 صفحة', fileUrl: '' },
+      { id: 's6', stageId: 'sec3',  title: 'بنك أسئلة الديناميكا والاستاتيكا', unit: 'قوانين نيوتن والاتزان', size: '5.5 MB', pages: '45 صفحة', fileUrl: '' }
+    ];
+
+    // Configurable Revisions Data Bank
+    let SAMPLE_REVISIONS = [
+      { id: 'r1', stageId: 'prep1', title: 'مراجعة ليلة الامتحان جبر أولى إعدادي', unit: 'امتحانات المحافظات المترقبة', year: '2026', fileUrl: '' },
+      { id: 'r2', stageId: 'prep2', title: 'المراجعة النهائية هندسة تانية إعدادي', unit: 'أهم 50 سؤال برهان', year: '2026', fileUrl: '' },
+      { id: 'r3', stageId: 'prep3', title: 'الزيتونة في الرياضيات - ثالثة إعدادي', unit: 'مراجعة شاملة لجميع الأفكار', year: '2026', fileUrl: '' },
+      { id: 'r4', stageId: 'sec1',  title: 'نماذج امتحانات أولى ثانوي نماذج الوزارة', unit: 'نظام جديد MCQs', year: '2026', fileUrl: '' },
+      { id: 'r5', stageId: 'sec2',  title: 'مراجعة ليلة الامتحان تفاضل وتكامل', unit: 'علمي وأدبي', year: '2026', fileUrl: '' },
+      { id: 'r6', stageId: 'sec3',  title: 'المراجعة الكبرى ثانوية عامة - 1000 سؤال', unit: 'الرياضيات المحتة والتطبيقية', year: '2026', fileUrl: '' }
+    ];
+
+    /* ==========================================================================
+       2. STATE MANAGEMENT
+       ========================================================================== */
+    let currentTab = 'videos'; // 'videos' | 'sheets' | 'revisions'
+    let currentSearchQuery = '';
+    let fetchedVideos = [];
+    let nextPageToken = null;
+    let expandedStages = new Set(['prep1', 'prep2', 'prep3', 'sec1', 'sec2', 'sec3']); // Expanded by default
+
+
+
+    /* ==========================================================================
+       3. INITIALIZATION & EVENT LISTENERS
+       ========================================================================== */
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('currentYear').textContent = new Date().getFullYear();
+      
+      // Mobile Drawer Toggle Logic
+      const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+      const mobileDrawer = document.getElementById('mobileDrawer');
+      mobileMenuBtn.addEventListener('click', () => {
+        mobileDrawer.classList.toggle('hidden');
+      });
+
+      document.querySelectorAll('.mobile-nav-link').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileDrawer.classList.add('hidden');
+        });
+      });
+
+      // Load or set default YouTube API key
+      // Load editable sheets/revisions from Supabase when configured; keep the existing sample content as fallback.
+      loadPublicContent();
+      // YouTube API key is configured in js/config.js. Do not store or expose unrestricted keys.
+      const savedKey = localStorage.getItem(YOUTUBE_CONFIG.localStorageKey) || YOUTUBE_CONFIG.defaultApiKey;
+      if (savedKey) fetchYouTubeVideosLive(savedKey);
+      else { fetchedVideos = [...SAMPLE_VIDEOS]; renderContent(); }
+    });
+
+    function initializeData() {
+      const apiKey = localStorage.getItem(YOUTUBE_CONFIG.localStorageKey) || YOUTUBE_CONFIG.defaultApiKey;
+      if (apiKey) fetchYouTubeVideosLive(apiKey);
+      else { fetchedVideos = [...SAMPLE_VIDEOS]; renderContent(); }
+    }
+
+
+    /* ==========================================================================
+       4. YOUTUBE API INTEGRATION ENGINE & AUTO CLASSIFICATION
+       ========================================================================== */
+    
+    async function fetchYouTubeVideosLive(apiKey, pageToken = '') {
+      const counterEl = document.getElementById('contentCounter');
+      const refreshIcon = document.getElementById('refreshIcon');
+      refreshIcon.classList.add('fa-spin');
+      counterEl.textContent = 'جاري تحميل فيديوهات القناة...';
+
+      try {
+        // Resolve the channel and its uploads playlist once, then paginate the full playlist.
+        let uploadsPlaylistId = localStorage.getItem('kaledsobh_yt_uploads_playlist_id');
+        if (!uploadsPlaylistId) {
+          const channelUrl = `https://www.googleapis.com/youtube/v3/channels?part=snippet,contentDetails&forHandle=${encodeURIComponent(YOUTUBE_CONFIG.channelHandle.replace(/^@/, ''))}&key=${encodeURIComponent(apiKey)}`;
+          const channelRes = await fetch(channelUrl);
+          const channelData = await channelRes.json();
+          if (!channelRes.ok || channelData.error) {
+            throw new Error(channelData.error?.message || 'تعذّر الوصول إلى بيانات القناة. راجع API Key وإعدادات YouTube Data API v3.');
+          }
+          const channel = channelData.items?.[0];
+          if (!channel) throw new Error('لم يتم العثور على القناة @mr.khaledsobh.');
+          uploadsPlaylistId = channel.contentDetails?.relatedPlaylists?.uploads;
+          if (!uploadsPlaylistId) throw new Error('تعذّر العثور على قائمة الفيديوهات المرفوعة للقناة.');
+          localStorage.setItem('kaledsobh_yt_uploads_playlist_id', uploadsPlaylistId);
+          localStorage.setItem('kaledsobh_yt_channel_id', channel.id);
+        }
+
+        const params = new URLSearchParams({
+          part: 'snippet,contentDetails',
+          playlistId: uploadsPlaylistId,
+          maxResults: '50',
+          key: apiKey
+        });
+        if (pageToken) params.set('pageToken', pageToken);
+        const videosRes = await fetch(`https://www.googleapis.com/youtube/v3/playlistItems?${params.toString()}`);
+        const videosData = await videosRes.json();
+        if (!videosRes.ok || videosData.error) {
+          throw new Error(videosData.error?.message || 'حدث خطأ أثناء جلب فيديوهات يوتيوب.');
+        }
+
+        nextPageToken = videosData.nextPageToken || null;
+        const newVideos = (videosData.items || []).map(item => {
+          const snippet = item.snippet || {};
+          const videoId = snippet.resourceId?.videoId;
+          if (!videoId) return null;
+          const title = snippet.title || 'فيديو بدون عنوان';
+          const desc = snippet.description || '';
+          const thumbs = snippet.thumbnails || {};
+          const thumbnail = (thumbs.maxres || thumbs.high || thumbs.medium || thumbs.default)?.url || `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+          return {
+            id: videoId,
+            videoId,
+            title,
+            description: desc,
+            thumbnail,
+            publishedAt: (snippet.publishedAt || '').split('T')[0] || 'غير معروف',
+            stageId: autoClassifyVideo(title, desc)
+          };
+        }).filter(Boolean);
+
+        const combined = pageToken ? [...fetchedVideos, ...newVideos] : newVideos;
+        const seen = new Set();
+        fetchedVideos = combined.filter(video => {
+          if (seen.has(video.videoId)) return false;
+          seen.add(video.videoId);
+          return true;
+        });
+
+        try {
+          localStorage.setItem(YOUTUBE_CONFIG.cachedDataKey, JSON.stringify(fetchedVideos));
+        } catch (storageError) {
+          console.warn('Could not cache video list:', storageError);
+        }
+        renderContent();
+        counterEl.textContent = `تم تحميل ${fetchedVideos.length} فيديو${nextPageToken ? ' — اضغط «تحميل المزيد» لعرض الباقي' : ' من القناة'}`;
+      } catch (err) {
+        console.error('YouTube API Fetch failed:', err);
+        if (!fetchedVideos.length) {
+          try {
+            const cached = JSON.parse(localStorage.getItem(YOUTUBE_CONFIG.cachedDataKey) || '[]');
+            fetchedVideos = Array.isArray(cached) ? cached : [];
+          } catch (_) {
+            fetchedVideos = [];
+          }
+        }
+        renderContent();
+        counterEl.textContent = `تعذّر تحديث يوتيوب: ${err.message}`;
+        showToast('تعذّر تحديث الفيديوهات. راجع مفتاح API أو اتصال الإنترنت.', 'warning');
+      } finally {
+        refreshIcon.classList.remove('fa-spin');
+      }
+    }
+
+    // Auto-classification: inspect title and the complete YouTube description.
+    // We only assign a grade when there is a recognizable grade phrase; ambiguous videos stay unclassified.
+    function autoClassifyVideo(title, description = '') {
+      const fullText = normalizeArabicText(`${title || ''} ${description || ''}`);
+      for (const rule of CLASSIFICATION_RULES) {
+        if (rule.patterns.some(pattern => pattern.test(fullText))) return rule.stageId;
+      }
+      return 'unclassified';
+    }
+
+    function refreshYouTubeData() {
+      const apiKey = localStorage.getItem(YOUTUBE_CONFIG.localStorageKey) || YOUTUBE_CONFIG.defaultApiKey;
+      if (apiKey) {
+        fetchYouTubeVideosLive(apiKey);
+      } else {
+        fetchedVideos = [...SAMPLE_VIDEOS];
+        renderContent();
+        showToast('تم تحديث عرض المحتوى التلقائي بنجاح', 'success');
+      }
+    }
+
+    function fetchMoreYouTubeVideos() {
+      const apiKey = localStorage.getItem(YOUTUBE_CONFIG.localStorageKey) || YOUTUBE_CONFIG.defaultApiKey;
+      if (apiKey && nextPageToken) {
+        fetchYouTubeVideosLive(apiKey, nextPageToken);
+      } else {
+        showToast('لا توجد صفحات إضافية جارية في الوضع الحالي.', 'info');
+      }
+    }
+
+
+    /* ==========================================================================
+       5. TAB & ACCORDION RENDER LOGIC
+       ========================================================================== */
+    
+    function switchMainTab(tab) {
+      currentTab = tab;
+      
+      const tabs = ['videos', 'sheets', 'revisions'];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tabBtn-${t}`);
+        if (t === tab) {
+          btn.className = "px-6 py-3 rounded-xl font-bold text-sm sm:text-base transition-all duration-200 flex items-center gap-2 bg-brand-accent text-white shadow-md";
+        } else {
+          btn.className = "px-6 py-3 rounded-xl font-bold text-sm sm:text-base text-slate-400 hover:text-white transition-all duration-200 flex items-center gap-2";
+        }
+      });
+
+      renderContent();
+    }
+
+    function toggleAccordion(stageId) {
+      if (expandedStages.has(stageId)) {
+        expandedStages.delete(stageId);
+      } else {
+        expandedStages.add(stageId);
+      }
+      renderContent();
+    }
+
+    function renderContent() {
+      // Re-evaluate existing videos too, so stale cached classifications are corrected.
+      if (currentTab === 'videos' && Array.isArray(fetchedVideos)) {
+        fetchedVideos = fetchedVideos.map(video => ({
+          ...video,
+          stageId: autoClassifyVideo(video.title, video.description || '')
+        }));
+      }
+      const container = document.getElementById('stagesAccordionContainer');
+      container.innerHTML = '';
+
+      let totalItemsCount = 0;
+
+      ACADEMIC_STAGES.forEach(stage => {
+        let stageItems = getItemsForStageAndTab(stage.id, currentTab);
+
+        if (currentSearchQuery.trim() !== '') {
+          const q = currentSearchQuery.toLowerCase();
+          stageItems = stageItems.filter(item => 
+            item.title.toLowerCase().includes(q) || 
+            (item.description && item.description.toLowerCase().includes(q)) ||
+            (item.unit && item.unit.toLowerCase().includes(q))
+          );
+        }
+
+        totalItemsCount += stageItems.length;
+
+        const isExpanded = expandedStages.has(stage.id);
+        const stageEl = document.createElement('div');
+        stageEl.className = "glass-card rounded-2xl overflow-hidden transition-all duration-200";
+
+        stageEl.innerHTML = `
+          <button onclick="toggleAccordion('${stage.id}')" class="w-full p-5 flex items-center justify-between text-right hover:bg-slate-800/50 transition-colors focus:outline-none">
+            <div class="flex items-center gap-4">
+              <div class="w-10 h-10 rounded-xl bg-brand-accent/20 border border-brand-accent/40 text-brand-electric flex items-center justify-center font-bold text-sm">
+                ${stage.badge}
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-white">${stage.name}</h3>
+                <p class="text-xs text-slate-400 mt-0.5">${stage.desc}</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-300 font-semibold">
+                ${stageItems.length} عناصر
+              </span>
+              <i class="fa-solid fa-chevron-down text-slate-400 transition-transform duration-300 ${isExpanded ? 'rotate-180 text-brand-electric' : ''}"></i>
+            </div>
+          </button>
+          
+          <div class="stage-body ${isExpanded ? 'block' : 'hidden'} p-5 border-t border-slate-800/80 bg-slate-900/40">
+            ${renderStageBodyContent(stageItems, currentTab)}
+          </div>
+        `;
+
+        container.appendChild(stageEl);
+      });
+
+      const counterEl = document.getElementById('contentCounter');
+      counterEl.textContent = `إجمالي العناصر المعروضة: ${totalItemsCount}`;
+
+      const loadMoreContainer = document.getElementById('loadMoreContainer');
+      if (currentTab === 'videos' && nextPageToken) {
+        loadMoreContainer.classList.remove('hidden');
+      } else {
+        loadMoreContainer.classList.add('hidden');
+      }
+    }
+
+    async function loadPublicContent() {
+      if (!window.supabaseClientReady || !window.supabaseClient) return;
+      try {
+        const { data, error } = await window.supabaseClient
+          .from('content_items').select('*').eq('is_published', true).order('created_at', { ascending: false });
+        if (error) throw error;
+        if (Array.isArray(data)) {
+          SAMPLE_SHEETS = data.filter(x => x.content_type === 'sheet').map(x => ({
+            id: x.id, stageId: x.stage_id, title: x.title, unit: x.unit || '',
+            size: x.file_size || 'PDF', pages: x.pages || 'ملف PDF', fileUrl: x.file_url || ''
+          }));
+          SAMPLE_REVISIONS = data.filter(x => x.content_type === 'revision').map(x => ({
+            id: x.id, stageId: x.stage_id, title: x.title, unit: x.unit || '',
+            year: x.year || String(new Date().getFullYear()), fileUrl: x.file_url || ''
+          }));
+          renderContent();
+        }
+      } catch (err) {
+        console.warn('Supabase content could not be loaded; showing local sample content.', err.message || err);
+      }
+    }
+
+    function getItemsForStageAndTab(stageId, tab) {
+      if (tab === 'videos') return fetchedVideos.filter(v => v.stageId === stageId);
+      if (tab === 'sheets') return SAMPLE_SHEETS.filter(s => s.stageId === stageId);
+      if (tab === 'revisions') return SAMPLE_REVISIONS.filter(r => r.stageId === stageId);
+      return [];
+    }
+
+    function renderStageBodyContent(items, tab) {
+      if (items.length === 0) {
+        return `
+          <div class="text-center py-8 px-4 rounded-xl border border-dashed border-slate-800 text-slate-400">
+            <i class="fa-solid fa-folder-open text-2xl text-slate-600 mb-2"></i>
+            <p class="text-sm font-semibold">المحتوى هيتضاف قريبًا لهذه المرحلة.</p>
+            <span class="text-xs text-slate-500">تابع القناة للحصول على أحدث التحديثات الشاملة.</span>
+          </div>
+        `;
+      }
+
+      if (tab === 'videos') {
+        return `
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            ${items.map(v => `
+              <div class="bg-slate-800/90 rounded-xl overflow-hidden border border-slate-700/60 hover:border-brand-electric/50 transition-all duration-300 group flex flex-col h-full shadow-lg">
+                <div class="relative aspect-video w-full overflow-hidden bg-slate-950">
+                  <img src="${v.thumbnail}" alt="${v.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://placehold.co/600x337/0f172a/ffffff?text=Khaled+Sobh+Math'" />
+                  <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+                  <button onclick="playVideo('${v.videoId}', '${escapeHtml(v.title)}', '${v.publishedAt}')" class="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <div class="w-12 h-12 rounded-full bg-red-600 text-white flex items-center justify-center text-lg shadow-xl hover:scale-110 transition-transform">
+                      <i class="fa-solid fa-play mr-0.5"></i>
+                    </div>
+                  </button>
+                  <span class="absolute bottom-2 right-2 px-2 py-0.5 rounded bg-black/80 text-[10px] text-slate-300 font-mono">
+                    ${v.publishedAt}
+                  </span>
+                </div>
+                <div class="p-4 flex flex-col flex-grow justify-between space-y-3">
+                  <h4 class="text-sm font-bold text-white line-clamp-2 leading-snug group-hover:text-brand-electric transition-colors">
+                    ${v.title}
+                  </h4>
+                  <p class="text-xs text-slate-400 line-clamp-2">
+                    ${v.description || 'شرح درس مميز ضمن منهج الرياضيات مع الأستاذ خالد صبح.'}
+                  </p>
+                  <button onclick="playVideo('${v.videoId}', '${escapeHtml(v.title)}', '${v.publishedAt}')" class="w-full py-2 rounded-lg bg-slate-700/80 hover:bg-brand-accent text-white text-xs font-bold transition-all flex items-center justify-center gap-2 mt-auto">
+                    <i class="fa-brands fa-youtube text-red-400"></i> شاهد الفيديو الآن
+                  </button>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (tab === 'sheets') {
+        return `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${items.map(s => `
+              <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-between gap-4 hover:border-brand-cyan/50 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-lg bg-red-500/10 border border-red-500/30 text-red-400 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-file-pdf"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-white">${s.title}</h4>
+                    <span class="text-xs text-slate-400 block">${s.unit}</span>
+                    <span class="text-[10px] text-brand-cyan mt-1 inline-block font-mono">${s.size} • ${s.pages}</span>
+                  </div>
+                </div>
+                <a href="${s.fileUrl || '#'}" aria-disabled="${!s.fileUrl}" title="${s.fileUrl ? 'تحميل المذكرة' : 'ملف PDF غير مرفوع بعد'}" onclick="handlePdfDownload(event, '${s.title.replace(/'/g, '&#39;')}', '${s.fileUrl}')" class="px-3.5 py-2 rounded-lg ${s.fileUrl ? 'bg-brand-cyan/20 hover:bg-brand-cyan text-brand-cyan hover:text-slate-950' : 'bg-slate-700/50 text-slate-400 cursor-not-allowed'} font-bold text-xs transition-all shrink-0 flex items-center gap-1.5">
+                  <i class="fa-solid fa-download"></i>
+                  <span>تحميل</span>
+                </a>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      } else if (tab === 'revisions') {
+        return `
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            ${items.map(r => `
+              <div class="p-4 rounded-xl bg-slate-800/80 border border-slate-700/60 flex items-center justify-between gap-4 hover:border-amber-400/50 transition-all">
+                <div class="flex items-center gap-3">
+                  <div class="w-11 h-11 rounded-lg bg-amber-400/10 border border-amber-400/30 text-amber-400 flex items-center justify-center text-xl shrink-0">
+                    <i class="fa-solid fa-star"></i>
+                  </div>
+                  <div>
+                    <h4 class="text-sm font-bold text-white">${r.title}</h4>
+                    <span class="text-xs text-slate-400 block">${r.unit}</span>
+                    <span class="text-[10px] text-amber-400 mt-1 inline-block font-bold">عام ${r.year}</span>
+                  </div>
+                </div>
+                <a href="${r.fileUrl || '#'}" aria-disabled="${!r.fileUrl}" title="${r.fileUrl ? 'تحميل المراجعة' : 'ملف PDF غير مرفوع بعد'}" onclick="handlePdfDownload(event, '${r.title.replace(/'/g, '&#39;')}', '${r.fileUrl}')" class="px-3.5 py-2 rounded-lg ${r.fileUrl ? 'bg-amber-400/20 hover:bg-amber-400 text-amber-300 hover:text-slate-950' : 'bg-slate-700/50 text-slate-400 cursor-not-allowed'} font-bold text-xs transition-all shrink-0 flex items-center gap-1.5">
+                  <i class="fa-solid fa-file-arrow-down"></i>
+                  <span>المراجعة</span>
+                </a>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+
+
+    /* ==========================================================================
+       6. SEARCH & INTERACTION HELPERS
+       ========================================================================== */
+    
+    function handleSearch() {
+      const q = document.getElementById('searchInput').value;
+      currentSearchQuery = q;
+      const clearBtn = document.getElementById('clearSearchBtn');
+      if (q) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      renderContent();
+    }
+
+    function clearSearch() {
+      document.getElementById('searchInput').value = '';
+      currentSearchQuery = '';
+      document.getElementById('clearSearchBtn').classList.add('hidden');
+      renderContent();
+    }
+
+    function playVideo(videoId, title, date) {
+      const modal = document.getElementById('videoPlayerModal');
+      const iframe = document.getElementById('youtubeIframe');
+      const modalTitle = document.getElementById('videoModalTitle');
+      const modalDate = document.getElementById('videoModalDate');
+      const extLink = document.getElementById('videoModalExternalLink');
+
+      const playerParams = new URLSearchParams({ autoplay: '1', playsinline: '1' });
+      if (location.protocol === 'http:' || location.protocol === 'https:') playerParams.set('origin', location.origin);
+      iframe.src = `https://www.youtube.com/embed/${encodeURIComponent(videoId)}?${playerParams.toString()}`;
+      modalTitle.textContent = title;
+      modalDate.textContent = `تاريخ النشر: ${date}`;
+      extLink.href = `https://www.youtube.com/watch?v=${videoId}`;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeVideoModal() {
+      const modal = document.getElementById('videoPlayerModal');
+      const iframe = document.getElementById('youtubeIframe');
+      iframe.src = '';
+      modal.classList.add('hidden');
+    }
+
+    function handlePdfDownload(e, title, fileUrl) {
+      if (!fileUrl || fileUrl === '#' || fileUrl.trim() === '') {
+        e.preventDefault();
+        showToast('ملف PDF لهذه المذكرة غير مرفوع حاليًا. سيتم تفعيل التحميل عند إضافة الملف الحقيقي.', 'warning');
+        return;
+      }
+      // Let the browser open/download the real PDF URL; do not pretend a placeholder is a file.
+      if (/^(javascript:|data:text\/html)/i.test(fileUrl)) {
+        e.preventDefault();
+        showToast('رابط الملف غير صالح.', 'warning');
+      }
+    }
+
+
+    /* API key controls removed from student-facing interface. The configured key remains loaded internally. */
+
+
+    /* ==========================================================================
+       8. CONTACT FORM & VALIDATION
+       ========================================================================== */
+    
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('senderName').value.trim();
+      const contact = document.getElementById('senderContact').value.trim();
+      const stage = document.getElementById('senderStage').value;
+      const message = document.getElementById('senderMessage').value.trim();
+      const alertBox = document.getElementById('formAlert');
+
+      if (!name || !contact || !message) {
+        alertBox.className = "p-4 rounded-xl text-sm font-semibold mb-4 bg-red-500/20 border border-red-500/40 text-red-300";
+        alertBox.textContent = "يرجى ملء جميع الحقول المطلوبة بشكل صحيح.";
+        alertBox.classList.remove('hidden');
+        return;
+      }
+
+      const whatsappNumber = '201223950587';
+      const whatsappMessage = [
+        'السلام عليكم أستاذ خالد صبح، عندي استفسار من خلال منصة الرياضيات.',
+        `الاسم: ${name}`,
+        `رقم التواصل: ${contact}`,
+        `الصف الدراسي: ${stage || 'غير محدد'}`,
+        `الرسالة: ${message}`
+      ].join('\n');
+      const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(whatsappMessage)}`;
+      const whatsappWindow = window.open(whatsappUrl, '_blank');
+      if (whatsappWindow) whatsappWindow.opener = null;
+      else window.location.href = whatsappUrl;
+
+      alertBox.className = "p-4 rounded-xl text-sm font-semibold mb-4 bg-emerald-500/20 border border-emerald-500/40 text-emerald-300";
+      alertBox.textContent = whatsappWindow
+        ? "فتحنا واتساب برسالتك جاهزة للإرسال. اضغط إرسال داخل واتساب لإتمام التواصل."
+        : "لم نتمكن من فتح واتساب تلقائيًا. استخدم زر واتساب المباشر وحاول مرة أخرى.";
+      alertBox.classList.remove('hidden');
+      if (whatsappWindow) document.getElementById('contactForm').reset();
+    }
+
+    /* ==========================================================================
+       9. UTILITIES & TOAST NOTIFICATION
+       ========================================================================== */
+    
+    function escapeHtml(str) {
+      return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+    }
+
+    function showToast(msg, type = 'info') {
+      const toast = document.createElement('div');
+      let bgColor = 'bg-brand-accent';
+      if (type === 'success') bgColor = 'bg-emerald-600';
+      if (type === 'warning') bgColor = 'bg-amber-600';
+
+      toast.className = `fixed bottom-6 left-6 z-50 px-5 py-3 rounded-xl text-white font-bold text-xs shadow-2xl ${bgColor} transition-all duration-300 transform translate-y-4 opacity-0 flex items-center gap-2`;
+      toast.innerHTML = `<i class="fa-solid fa-circle-info"></i> <span>${msg}</span>`;
+
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-4', 'opacity-0');
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-4');
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+  </script>
+</body>
+</html>
